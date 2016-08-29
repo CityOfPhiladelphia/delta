@@ -154,7 +154,7 @@ def main(config, expand, limit):
     # handle args
     if expand:
         if ':' in expand:
-            expand_fields, expand_count = field.split(':')
+            expand_fields, expand_count = expand.split(':')
         else:
             expand_fields = expand
             expand_count = 20
