@@ -13,6 +13,7 @@ Delta is tool for finding differences in CSV files, with an emphasis on content 
 A basic diff tool will tell us that the `hire_date` changed from `02-01-2010` to `1-FEB-2010`, but really only the _format_ changed. What if we only want to know when the date itself changes? Delta allows you to progressively filter out known or acceptable differences so you can focus on real discrepancies in the data.
 
 A typical workflow would be:
+
 1. Run your data through Delta.
 2. Look at the output and isolate known or uninteresting differences.
 3. Write transforms to effectively ignore those cases on the next run.

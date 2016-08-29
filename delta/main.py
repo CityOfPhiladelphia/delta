@@ -10,9 +10,10 @@ from .util import import_module_from_file
 def stringify_change(change):
     """Helper function to make a readable string out of a Change object 
     (e.g. old_val => new_val)"""
+    key = change.key
     a = change.a or '<null>'
     b = change.b or '<null>'
-    return '{} => {}'.format(a, b)
+    return '{}: {} => {}'.format(key, a, b)
 
 def make_row_map(file_path, key_field, field_map=None, transforms=None, \
                  file_encoding=None):
