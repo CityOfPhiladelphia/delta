@@ -14,10 +14,10 @@ A basic diff tool will tell us that the `hire_date` changed from `02-01-2010` to
 
 A typical workflow would be:
 
-1. Run your data through Delta.
-2. Look at the output and isolate known or uninteresting differences.
-3. Write transforms to effectively ignore those cases on the next run.
-4. Repeat.
+ 1. Run your data through Delta.
+ 2. Look at the output and isolate known or uninteresting differences.
+ 3. Write transforms to effectively ignore those cases on the next run.
+ 4. Repeat.
 
 ## Installation
 
