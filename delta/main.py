@@ -166,8 +166,8 @@ def main(config, expand, limit):
     if config_path is None or not os.path.isfile(config_path):
         raise ValueError('Invalid config path')
     config_mod = import_module_from_file('config_mod', config_path)
-    from config_mod import config
-    
+    config = config_mod.config
+
     # some global config
     field_map = {key.lower(): val.lower() for key, val in \
                                 config['field_map'].items()}
