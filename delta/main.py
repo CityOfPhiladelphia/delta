@@ -83,14 +83,14 @@ def diff(row_map_a, row_map_b, key_field, exclude_fields=None, limit=None):
     Change = namedtuple('Change', 'key a b')
 
     # compute fields of interest
-    # fields = next(iter(row_map_a.values()))
-    fields = next(iter(row_map_a.values()))._fields
-    include_fields = set(fields) - set(exclude_fields)
+    fields_a = next(iter(row_map_a.values()))._fields
+    fields_b = next(iter(row_map_b.values()))._fields
+    common_fields = set(fields_a).intersection(fields_b)
+    include_fields = common_fields - set(exclude_fields)
 
     # sort keys
     keys_a = sorted(list(row_map_a.keys()))
     keys_b = sorted(list(row_map_b.keys()))
-
 
     # limit, optionally
     if limit:
@@ -117,16 +117,9 @@ def diff(row_map_a, row_map_b, key_field, exclude_fields=None, limit=None):
 
         # diff fields
         for field in include_fields:
-            # val_a = row_a[field]
             val_a = getattr(row_a, field)
-            # val_b = row_b[field]
             val_b = getattr(row_b, field)
             if val_a != val_b:
-                # change = {
-                #     'key': key,
-                #     'a': val_a,
-                #     'b': val_b,
-                # }
                 change = Change(key=key, a=val_a, b=val_b)
                 changes[field].append(change)
 
