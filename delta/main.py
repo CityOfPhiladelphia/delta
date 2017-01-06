@@ -8,7 +8,7 @@ from pprint import pprint
 from .util import import_module_from_file
 
 def stringify_change(change):
-    """Helper function to make a readable string out of a Change object 
+    """Helper function to make a readable string out of a Change object
     (e.g. old_val => new_val)"""
     key = change.key
     a = change.a or '<null>'
@@ -17,7 +17,7 @@ def stringify_change(change):
 
 def make_row_map(file_path, key_field, field_map=None, transforms=None, \
                  file_encoding=None):
-    """Constructs a map of data rows indexed by the key field. Also applies 
+    """Constructs a map of data rows indexed by the key field. Also applies
     transforms and handles field mappings."""
 
     with open(file_path, encoding=file_encoding) as file:
@@ -34,7 +34,13 @@ def make_row_map(file_path, key_field, field_map=None, transforms=None, \
                 }
 
         # get fields from csv
-        fields = next(csv.reader(file))
+        fields_reader = csv.reader(file)
+        fields = next(fields_reader)
+
+        # make sure we aren't missing any field names
+        first_row = next(fields_reader)
+        if len(fields) != len(first_row):
+            raise ValueError('Header has a different number of columns than data')
 
         # apply field map
         if field_map:
@@ -55,9 +61,10 @@ def make_row_map(file_path, key_field, field_map=None, transforms=None, \
         # make map
         row_map = {}
         reader = csv.DictReader(file, fieldnames=fields)
+
         for i, row in enumerate(reader):
             key = row[key_field]
-            
+
             # apply transforms
             if transforms:
                 for tf_field, tf_map in _transforms.items():
@@ -71,8 +78,11 @@ def make_row_map(file_path, key_field, field_map=None, transforms=None, \
                     row[tf_field] = val
 
             # row_map[key] = row
-            str_row = {key: str(val) for key, val in row.items()}
+            # str_row = {key: str(val) for key, val in row.items()}
             row_map[key] = Row(**row)
+            # from pprint import pprint
+            # pprint(str_row)
+            # row_map[key] = Row(**str_row)
 
         return row_map
 
@@ -170,10 +180,10 @@ def main(config, expand, limit):
     print('Reading rows from A...')
     file_path_a = config['sources']['a']['file']
     # TODO: can `open` accept None as an encoding?
-    file_encoding_a = config['sources']['a'].get('encoding') or 'utf-8'    
+    file_encoding_a = config['sources']['a'].get('encoding') or 'utf-8'
     transforms_a = config.get('transforms').get('a')
     row_map_a = make_row_map(file_path_a, key_field, transforms=transforms_a)
-
+    
     print('Reading rows from B...')
     file_path_b = config['sources']['b']['file']
     file_encoding_b = config['sources']['b'].get('encoding') or 'utf-8'
@@ -207,8 +217,8 @@ def main(config, expand, limit):
         field_changes_len = len(field_changes)
         example_change = field_changes[0]
         example = stringify_change(example_change)
-        stats = '{}: {} ({}%)'.format(field, 
-                                      field_changes_len, 
+        stats = '{}: {} ({}%)'.format(field,
+                                      field_changes_len,
                                       round(100 * field_changes_len / total),
                                       2)
         print('{}{}example: {}'.format(stats, ' ' * (50 - len(stats)), example))
